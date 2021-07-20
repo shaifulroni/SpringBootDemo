@@ -1,6 +1,7 @@
 package co.modularbank.banking.mapper;
 
 import co.modularbank.banking.domain.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -119,5 +120,10 @@ public class BalanceMapperTest {
         Assertions.assertTrue(balanceId > 0);
 
         Assertions.assertThrows(Exception.class, () -> balanceMapper.updateAccountBalanceWithCurrency(testAccount.getId(), euro.getId(), -9.9));
+    }
+
+    @AfterEach
+    void teardown() {
+        customerMapper.deleteCustomerById(testCustomer.getId());
     }
 }

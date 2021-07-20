@@ -15,4 +15,6 @@ public interface CustomerMapper {
     public Optional<Customer> getCustomerById(@Param("id") long id);
 
     public long insertCustomer(Customer customer);
+
+    public void deleteCustomerById(long customerId);
 }

@@ -26,4 +26,8 @@
             (#{firstName}, #{lastName}, #{phoneNumber}, #{email})
         RETURNING id
     </select>
+
+    <delete id="deleteCustomerById" parameterType="java.lang.Long">
+        DELETE FROM customer WHERE id = #{id}
+    </delete>
 </mapper>

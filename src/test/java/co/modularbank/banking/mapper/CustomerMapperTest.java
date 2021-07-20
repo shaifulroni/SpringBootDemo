@@ -1,6 +1,7 @@
 package co.modularbank.banking.mapper;
 
 import co.modularbank.banking.domain.Customer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ public class CustomerMapperTest {
     @Autowired
     CustomerMapper customerMapper;
 
+    long customerId;
+
     @Test
     void testInsertCustomer() {
         String generatedEmail = UUID.randomUUID() + "@gmail.com";
@@ -22,7 +25,7 @@ public class CustomerMapperTest {
                 "Name",
                 generatedEmail,
                 "8801717001122");
-        long customerId = customerMapper.insertCustomer(customer);
+        customerId = customerMapper.insertCustomer(customer);
         Assertions.assertTrue(customerId > 0);
     }
 
@@ -40,7 +43,7 @@ public class CustomerMapperTest {
                 "Last",
                 generatedEmail,
                 "8801717000000");
-        long customerId = customerMapper.insertCustomer(customer);
+        customerId = customerMapper.insertCustomer(customer);
         Assertions.assertTrue(customerId > 0);
 
         Customer getCustomer = customerMapper.getCustomerById(customerId).orElseThrow();
@@ -48,5 +51,12 @@ public class CustomerMapperTest {
         Assertions.assertEquals("Last", getCustomer.getLastName());
         Assertions.assertEquals(generatedEmail, getCustomer.getEmail());
         Assertions.assertEquals("8801717000000", getCustomer.getPhoneNumber());
+    }
+
+    @AfterEach
+    void teardown() {
+        if(customerId > 0L) {
+            customerMapper.deleteCustomerById(customerId);
+        }
     }
 }

@@ -3,6 +3,7 @@ package co.modularbank.banking.mapper;
 import co.modularbank.banking.domain.Account;
 import co.modularbank.banking.domain.Country;
 import co.modularbank.banking.domain.Customer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,5 +75,10 @@ public class AccountMapperTest {
     void testGetInvalidAccountById() {
         Optional<Account> account = accountMapper.getAccountById(9999);
         Assertions.assertFalse(account.isPresent());
+    }
+
+    @AfterEach
+    void teardown() {
+        customerMapper.deleteCustomerById(testCustomer.getId());
     }
 }

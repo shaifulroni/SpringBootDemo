@@ -1,6 +1,7 @@
 package co.modularbank.banking.mapper;
 
 import co.modularbank.banking.domain.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,5 +81,10 @@ public class TransactionMapperTest {
         transaction.setDescription("Test transaction 1");
 
         Assertions.assertThrows(Exception.class, ()-> transactionMapper.insertTransaction(transaction));
+    }
+
+    @AfterEach
+    void teardown() {
+        customerMapper.deleteCustomerById(testCustomer.getId());
     }
 }
