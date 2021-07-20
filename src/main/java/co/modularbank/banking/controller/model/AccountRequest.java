@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class AccountRequest {
-    @Min(1)
+    @Min(value = 1, message = "Invalid customer id")
     private long customerId;
 
     @NotNull(message = "Country code can not be null or empty")

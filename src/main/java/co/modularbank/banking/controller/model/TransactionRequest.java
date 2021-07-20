@@ -21,6 +21,7 @@ public class TransactionRequest {
 
     @NotNull
     @NotEmpty(message = "Description missing")
+    @Size(max = 250, message = "Max description size is 250")
     private String description;
 
     public long getAccountId() {
