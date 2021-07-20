@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @SpringBootTest
 public class AccountServiceTest {
@@ -40,6 +42,32 @@ public class AccountServiceTest {
 
         accountRequest.setCurrencyCodes(currencyList);
         return accountRequest;
+    }
+
+    @Test
+    void givenAccountId_whenGetAccountById_thenVerifyAccountExists() {
+        AccountRequest accountRequest = createAccountRequest(customerId);
+
+        Assertions.assertDoesNotThrow(() -> {
+            long accountId = accountService.createAccount(accountRequest).getAccountId();
+
+            Assertions.assertDoesNotThrow(() -> {
+                AccountResponse existingAccount = accountService.getAccountById(accountId);
+
+                Assertions.assertEquals(customerId, existingAccount.getCustomerId());
+                Assertions.assertEquals(2, existingAccount.getBalance().size());
+                Assertions.assertEquals(0, existingAccount.getBalance().get(0).getAmount());
+            });
+        });
+    }
+
+    @Test
+    void givenInvalidAccountId_whenGetAccountById_thenVerifyAccountExists() {
+        AccountException exception = Assertions.assertThrows(AccountException.class, () -> {
+            AccountResponse existingAccount = accountService.getAccountById(99999);
+        });
+
+        Assertions.assertEquals("No account found", exception.getMessage());
     }
 
     @Test
