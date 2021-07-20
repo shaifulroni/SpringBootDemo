@@ -1,5 +1,6 @@
 package co.modularbank.banking.service.impl;
 
+import co.modularbank.banking.controller.model.TransactionRequest;
 import co.modularbank.banking.controller.model.TransactionResponse;
 import co.modularbank.banking.controller.model.SaveTransactionResponse;
 import co.modularbank.banking.controller.error.TransactionException;
@@ -9,6 +10,7 @@ import co.modularbank.banking.domain.Transaction;
 import co.modularbank.banking.domain.TransactionDirection;
 import co.modularbank.banking.mapper.AccountMapper;
 import co.modularbank.banking.mapper.BalanceMapper;
+import co.modularbank.banking.mapper.CurrencyMapper;
 import co.modularbank.banking.mapper.TransactionMapper;
 import co.modularbank.banking.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +26,23 @@ public class TransactionServiceImpl implements TransactionService {
     TransactionMapper transactionMapper;
 
     @Autowired
+    CurrencyMapper currencyMapper;
+
+    @Autowired
     BalanceMapper balanceMapper;
 
     @Autowired
     AccountMapper accountMapper;
 
-    public SaveTransactionResponse makeTransaction(Transaction transaction) throws TransactionException {
+    public SaveTransactionResponse makeTransaction(TransactionRequest transactionRequest) throws TransactionException {
+        Transaction transaction = new Transaction();
+        transaction.setAccountId(transactionRequest.getAccountId());
+        transaction.setDirection(TransactionDirection.valueOf(transactionRequest.getDirection()));
+        transaction.setAmount(transactionRequest.getAmount());
+        transaction.setCurrency(currencyMapper.getCurrencyByShortName(transactionRequest.getCurrency())
+                .orElseThrow(()-> new TransactionException("Invalid currency")));
+        transaction.setDescription(transactionRequest.getDescription());
+
         Account account = accountMapper.getAccountById(transaction.getAccountId())
                 .orElseThrow(() -> new TransactionException("Account missing"));
 
