@@ -1,0 +1,20 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.modularbank.banking.mapper.CurrencyMapper">
+    <resultMap type="co.modularbank.banking.domain.Currency" id="currencyMap">
+        <id column="id" property="id" />
+        <result column="name" property="name"/>
+        <result column="short_name" property="shortName"/>
+        <result column="symbol" property="symbol"/>
+    </resultMap>
+
+    <select id="getCurrencyById" parameterType="java.lang.Integer" resultMap="currencyMap">
+        SELECT * FROM currency WHERE id = #{id}
+    </select>
+
+    <select id="getCurrencyByShortName" parameterType="java.lang.String" resultMap="currencyMap">
+        SELECT * FROM currency WHERE short_name = #{shortName}
+    </select>
+</mapper>

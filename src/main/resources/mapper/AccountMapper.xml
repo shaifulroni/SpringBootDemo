@@ -1,0 +1,76 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.modularbank.banking.mapper.AccountMapper">
+    <resultMap type="co.modularbank.banking.domain.Account" id="accountMap">
+        <id column="id" property="id" />
+        <association column="customer_id" property="customer" javaType="co.modularbank.banking.domain.Customer">
+            <id column="customer_id" property="id" />
+            <result column="first_name" property="firstName"/>
+            <result column="last_name" property="lastName"/>
+            <result column="phone_number" property="phoneNumber"/>
+            <result column="email" property="email"/>
+        </association>
+        <association column="country_id" property="country" javaType="co.modularbank.banking.domain.Country">
+            <id column="country_id" property="id" />
+            <result column="country_name" property="name"/>
+            <result column="country_code" property="code"/>
+        </association>
+        <collection property="balanceList" ofType="co.modularbank.banking.domain.Balance">
+            <id column="balance_id" property="id" />
+            <result column="balance_amount" property="amount"/>
+            <association column="currency_id" property="currency" javaType="co.modularbank.banking.domain.Currency">
+                <id column="currency_id" property="id" />
+                <result column="currency_name" property="name"/>
+                <result column="currency_short_name" property="shortName"/>
+                <result column="currency_symbol" property="symbol"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <sql id="account_column_list">
+        account.id,
+        customer.id customer_id,
+        customer.first_name first_name,
+        customer.last_name last_name,
+        customer.phone_number phone_number,
+        customer.email email,
+        country.id country_id,
+        country.name country_name,
+        country.code country_code,
+        balance.id balance_id,
+        balance.amount balance_amount,
+        currency.id currency_id,
+        currency.name currency_name,
+        currency.short_name currency_short_name,
+        currency.symbol currency_symbol
+    </sql>
+
+    <select id="getAccountById" parameterType="java.lang.Long" resultMap="accountMap">
+        SELECT <include refid="account_column_list" />
+        FROM account
+            join customer on account.customer_id = customer.id
+            join country on account.country_id = country.id
+            left join balance on account.id = balance.account_id
+            left join currency on currency.id = balance.currency_id
+        WHERE
+            account.id = #{id}
+    </select>
+    <select id="getAccountByCustomerId" parameterType="java.lang.Long" resultMap="accountMap">
+        SELECT <include refid="account_column_list" />
+        FROM account
+            join customer on account.customer_id = customer.id
+            join country on account.country_id = country.id
+            left join balance on account.id = balance.account_id
+            left join currency on currency.id = balance.currency_id
+        WHERE
+            account.customer_id = #{id}
+    </select>
+
+    <select id="insertAccount" resultType="java.lang.Long" parameterType="co.modularbank.banking.domain.Account">
+        INSERT INTO account(customer_id, country_id)
+        VALUES (#{customer.id}, #{country.id})
+        RETURNING id
+    </select>
+</mapper>

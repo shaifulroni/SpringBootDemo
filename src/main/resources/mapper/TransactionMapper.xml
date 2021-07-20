@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.modularbank.banking.mapper.TransactionMapper">
+    <resultMap type="co.modularbank.banking.domain.Transaction" id="transactionMap">
+        <id column="id" property="id" />
+        <result column="account_id" property="accountId" />
+        <result column="amount" property="amount" />
+        <result column="direction" property="direction" javaType="co.modularbank.banking.domain.TransactionDirection" jdbcType="VARCHAR" />
+        <result column="description" property="description" />
+        <association column="currency_id" property="currency" javaType="co.modularbank.banking.domain.Currency">
+            <id column="currency_id" property="id" />
+            <result column="currency_name" property="name"/>
+            <result column="currency_short_name" property="shortName"/>
+            <result column="currency_symbol" property="symbol"/>
+        </association>
+    </resultMap>
+
+    <select id="getTransactionsByAccountId" parameterType="java.lang.Long" resultMap="transactionMap">
+        SELECT transaction.*,
+            currency.id currency_id,
+            currency.name currency_name,
+            currency.short_name currency_short_name,
+            currency.symbol currency_symbol
+        FROM account
+            left join transaction on transaction.account_id = account.id
+            left join currency on transaction.currency_id = currency.id
+        WHERE
+            account.id = #{id}
+        ORDER BY transaction.id DESC
+    </select>
+
+    <select id="insertTransaction" resultType="java.lang.Long" parameterType="co.modularbank.banking.domain.Transaction">
+        INSERT INTO transaction
+            (account_id, currency_id, amount, direction, description)
+        VALUES
+            (#{accountId}, #{currency.id}, #{amount}, #{direction, jdbcType=VARCHAR}::transaction_dir, #{description})
+        RETURNING id
+    </select>
+</mapper>

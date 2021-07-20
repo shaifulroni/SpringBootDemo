@@ -1,0 +1,50 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.modularbank.banking.mapper.BalanceMapper">
+    <resultMap type="co.modularbank.banking.domain.Balance" id="balanceMap">
+        <id column="id" property="id" />
+        <result column="amount" property="amount"/>
+        <association column="currency_id" property="currency" javaType="co.modularbank.banking.domain.Currency">
+            <id column="currency_id" property="id" />
+            <result column="name" property="name"/>
+            <result column="short_name" property="shortName"/>
+            <result column="symbol" property="symbol"/>
+        </association>
+    </resultMap>
+
+    <select id="getBalanceForAccountId" parameterType="java.lang.Long" resultMap="balanceMap">
+        SELECT balance.id, balance.amount, currency.id currency_id, currency.name, currency.short_name, currency.symbol
+        FROM balance
+            join currency on balance.currency_id = currency.id
+        WHERE
+            account_id = #{id}
+    </select>
+
+    <select id="getAccountBalanceWithCurrency" resultMap="balanceMap">
+        SELECT balance.id, balance.amount, currency.id currency_id, currency.name, currency.short_name, currency.symbol
+        FROM balance
+            join currency on balance.currency_id = currency.id
+        WHERE
+            account_id = #{accountId}
+            AND currency.id = #{currencyId}
+    </select>
+
+    <select id="addBalanceToAccount" resultType="java.lang.Long">
+        INSERT INTO balance
+            (amount, account_id, currency_id)
+        VALUES
+            (#{balance.amount}, #{accountId}, #{balance.currency.id})
+        RETURNING id
+    </select>
+
+    <update id="updateAccountBalanceWithCurrency" >
+        UPDATE balance
+        SET
+            amount = #{amount}
+        WHERE
+            account_id = #{accountId}
+            AND currency_id = #{currencyId}
+    </update>
+</mapper>
