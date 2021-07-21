@@ -1,11 +1,13 @@
 package co.modularbank.banking.service.impl;
 
+import co.modularbank.banking.amqp.message.AccountMessage;
 import co.modularbank.banking.controller.model.AccountRequest;
 import co.modularbank.banking.controller.model.AccountResponse;
 import co.modularbank.banking.controller.error.AccountException;
 import co.modularbank.banking.domain.*;
 import co.modularbank.banking.mapper.*;
 import co.modularbank.banking.service.AccountService;
+import co.modularbank.banking.service.RabbitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,13 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
     private final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
-    @Autowired public CountryMapper countryMapper;
-    @Autowired public AccountMapper accountMapper;
-    @Autowired public BalanceMapper balanceMapper;
-    @Autowired public CurrencyMapper currencyMapper;
-    @Autowired public CustomerMapper customerMapper;
+    @Autowired private CountryMapper countryMapper;
+    @Autowired private AccountMapper accountMapper;
+    @Autowired private BalanceMapper balanceMapper;
+    @Autowired private CurrencyMapper currencyMapper;
+    @Autowired private CustomerMapper customerMapper;
+
+    @Autowired private RabbitService rabbitService;
 
     public AccountResponse getAccountById(long id) throws AccountException{
         Optional<Account> account = accountMapper.getAccountById(id);
@@ -59,8 +63,15 @@ public class AccountServiceImpl implements AccountService {
         }
         logger.debug("Currency - " + currencyList);
 
-        return saveAccount(customer, country, currencyList).map(Account::toAccountResponse)
+        AccountResponse response = saveAccount(customer, country, currencyList)
+                .map(Account::toAccountResponse)
                 .orElseThrow(()-> new AccountException("Failed to create account"));
+
+        rabbitService.sendMessage(new AccountMessage(
+                "Account created with id " + response.getAccountId(),
+                response
+        ));
+        return response;
     }
 
     @Transactional

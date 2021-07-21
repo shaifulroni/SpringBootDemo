@@ -1,5 +1,6 @@
 package co.modularbank.banking.service.impl;
 
+import co.modularbank.banking.amqp.message.TransactionMessage;
 import co.modularbank.banking.controller.model.TransactionRequest;
 import co.modularbank.banking.controller.model.TransactionResponse;
 import co.modularbank.banking.controller.model.SaveTransactionResponse;
@@ -12,6 +13,7 @@ import co.modularbank.banking.mapper.AccountMapper;
 import co.modularbank.banking.mapper.BalanceMapper;
 import co.modularbank.banking.mapper.CurrencyMapper;
 import co.modularbank.banking.mapper.TransactionMapper;
+import co.modularbank.banking.service.RabbitService;
 import co.modularbank.banking.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,16 +25,19 @@ import java.util.stream.Collectors;
 @Service
 public class TransactionServiceImpl implements TransactionService {
     @Autowired
-    TransactionMapper transactionMapper;
+    private TransactionMapper transactionMapper;
 
     @Autowired
-    CurrencyMapper currencyMapper;
+    private CurrencyMapper currencyMapper;
 
     @Autowired
-    BalanceMapper balanceMapper;
+    private BalanceMapper balanceMapper;
 
     @Autowired
-    AccountMapper accountMapper;
+    private AccountMapper accountMapper;
+
+    @Autowired
+    private RabbitService rabbitService;
 
     public SaveTransactionResponse makeTransaction(TransactionRequest transactionRequest) throws TransactionException {
         Transaction transaction = new Transaction();
@@ -59,7 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new TransactionException("Insufficient funds");
 
         long transactionId = saveTransaction(transaction, updatedBalance);
-        return new SaveTransactionResponse(
+        SaveTransactionResponse response = new SaveTransactionResponse(
                 transaction.getAccountId(),
                 transactionId,
                 transaction.getAmount(),
@@ -68,6 +73,16 @@ public class TransactionServiceImpl implements TransactionService {
                 transaction.getDescription(),
                 updatedBalance
         );
+
+        rabbitService.sendMessage(new TransactionMessage(
+                "Transaction created for account " +
+                        response.getAccountId() +
+                        " with id " +
+                        response.getTransactionId(),
+                response
+        ));
+
+        return response;
     }
 
     @Transactional
