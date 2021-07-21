@@ -1,5 +1,15 @@
 -- insert some customer
--- INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Shaiful', 'Islam', '8801717494074', 'shaiful.cse@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Shaiful', 'Islam', '8801717494074', 'shaiful.cse@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Jeremy', 'Perez', '017722334455', 'Jeremy.Perez@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Shawn', 'Bailey', '017722334455', 'Shawn.Bailey@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Jean', 'Russell', '017722334455', 'Jean.Russell@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Beverly', 'Harris', '017722334455', 'Beverly.Harris@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Marilyn', 'Watson', '017722334455', 'Marilyn.Watson@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Juan', 'Young', '017722334455', 'Juan.Young@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Carol', 'Evans', '017722334455', 'Carol.Evans@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Heather', 'Anderson', '017722334455', 'Heather.Anderson@gmail.com');
+INSERT INTO customer(first_name, last_name, phone_number, email) VALUES ('Doris', 'Richardson', '017722334455', 'Doris.Richardson@gmail.com');
+
 
 -- insert currency information
 INSERT INTO currency(name, short_name, symbol) VALUES ('Euro', 'EUR', '€');
