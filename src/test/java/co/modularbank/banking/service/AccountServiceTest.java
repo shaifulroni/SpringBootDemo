@@ -1,5 +1,6 @@
 package co.modularbank.banking.service;
 
+import co.modularbank.banking.amqp.message.BaseRabbitMessage;
 import co.modularbank.banking.controller.error.AccountException;
 import co.modularbank.banking.controller.model.AccountRequest;
 import co.modularbank.banking.controller.model.AccountResponse;
@@ -9,8 +10,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +29,9 @@ public class AccountServiceTest {
     AccountService accountService;
 
     private long customerId;
+
+    @MockBean
+    RabbitService rabbitService;
 
     @BeforeEach
     void setup() {
