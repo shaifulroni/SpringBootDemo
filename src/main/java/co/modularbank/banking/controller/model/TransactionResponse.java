@@ -8,6 +8,8 @@ public class TransactionResponse {
     protected String direction;
     protected String description;
 
+    public TransactionResponse(){}
+
     public TransactionResponse(long accountId, long transactionId, double amount, String currency, String direction, String description) {
         this.accountId = accountId;
         this.transactionId = transactionId;

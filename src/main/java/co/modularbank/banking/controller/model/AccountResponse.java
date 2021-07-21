@@ -7,6 +7,8 @@ public class AccountResponse {
     private long customerId;
     private List<BalanceResponse> balance;
 
+    public AccountResponse() {}
+
     public AccountResponse(long accountId, long customerId, List<BalanceResponse> balance) {
         this.accountId = accountId;
         this.customerId = customerId;

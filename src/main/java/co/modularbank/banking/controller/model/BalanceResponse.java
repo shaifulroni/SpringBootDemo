@@ -4,6 +4,8 @@ public class BalanceResponse {
     private double amount;
     private String currency;
 
+    public BalanceResponse(){}
+
     public BalanceResponse(double amount, String currency) {
         this.amount = amount;
         this.currency = currency;

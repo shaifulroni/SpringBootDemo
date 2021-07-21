@@ -3,6 +3,8 @@ package co.modularbank.banking.controller.model;
 public class SaveTransactionResponse extends TransactionResponse {
     private double balance;
 
+    public SaveTransactionResponse() {}
+
     public SaveTransactionResponse(long accountId, long transactionId, double amount, String currency, String direction, String description, double balance) {
         super(accountId, transactionId, amount, currency, direction, description);
         this.balance = balance;
