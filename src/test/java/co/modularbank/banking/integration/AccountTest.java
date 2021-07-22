@@ -137,6 +137,16 @@ public class AccountTest {
                 .andExpect(jsonPath("$.message").value("Invalid or unsupported currency"));
     }
 
+    @Test
+    void givenInvalidJsonBody_whenInsertAccont_thenCheckFailed() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/account")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"customerId\":" + customerId +",\"countryCode\":\"Bangladesh\",\"currencyCodes\":[\"USD\",\"EUR\"]}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.message").value("Country code must be 2 character"));
+    }
+
     @AfterEach
     void teardown() {
         if(customerId > 0) {

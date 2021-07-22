@@ -184,6 +184,15 @@ public class TransactionTest {
                 .andExpect(jsonPath("$.message").value("Invalid account"));
     }
 
+    @Test
+    void givenNegativeAmount_whenMakeTransaction_thenCheckFailed() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"accountId\":" + accountId + ",\"amount\":-5.0,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid amount"));
+    }
+
     @AfterEach
     void teardown() {
         if(customerId > 0) {
