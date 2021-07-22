@@ -17,4 +17,6 @@ public interface CustomerMapper {
     public long insertCustomer(Customer customer);
 
     public void deleteCustomerById(long customerId);
+
+    public Optional<Customer> getCustomerByEmail(String email);
 }
