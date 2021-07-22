@@ -1,12 +1,10 @@
 package co.modularbank.banking.integration;
 
 import co.modularbank.banking.amqp.RabbitMessageListener;
-import co.modularbank.banking.domain.Customer;
 import co.modularbank.banking.mapper.CustomerMapper;
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.number.IsCloseTo;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,16 +32,24 @@ public class AccountTransactionTest {
     @MockBean
     RabbitMessageListener listener;
 
-    private long customerId;
-
-    @BeforeEach
-    void setup() {
-        Customer newCustomer = new Customer("FirstName", "LastName", UUID.randomUUID() + "@email.com", "8801231234");
-        customerId = customerMapper.insertCustomer(newCustomer);
-    }
+    private Integer customerId;
 
     @Test
     void testAccountAndTransaction() throws Exception {
+        // Create customer
+        String genEmail = UUID.randomUUID() + "@gmail.com";
+
+        MvcResult customerResult = mockMvc.perform(MockMvcRequestBuilders.post("/customer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"firstName\":\"First\",\"lastName\":\"Last\",\"email\":\"" + genEmail + "\",\"phoneNumber\":\"123456789\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("First Last"))
+                .andExpect(jsonPath("$.email").value(genEmail))
+                .andExpect(jsonPath("$.customerId").isNumber())
+                .andReturn();
+
+        customerId = JsonPath.read(customerResult.getResponse().getContentAsString(), "$.customerId");
+
         // Create account
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/account")
                 .contentType(MediaType.APPLICATION_JSON)
