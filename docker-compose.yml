@@ -7,7 +7,7 @@ services:
       context: .
     container_name: app
     ports:
-      - '80:8080'
+      - '8088:8080'
     depends_on:
       - db
       - rabbit
@@ -24,6 +24,8 @@ services:
       - POSTGRES_USER=modularbank
       - POSTGRES_PASSWORD=modularbank
       - POSTGRES_DB=modularbank
+#    ports: # Uncomment to test
+#      - 5432:5432
     volumes:
       - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
       - ./src/main/resources/data.sql:/docker-entrypoint-initdb.d/2-data.sql
@@ -32,5 +34,5 @@ services:
     image: 'rabbitmq:management-alpine'
     container_name: rabbit
     ports:
-#      - 5672:5672
+#      - 5672:5672 # Uncomment to test
       - 15672:15672
