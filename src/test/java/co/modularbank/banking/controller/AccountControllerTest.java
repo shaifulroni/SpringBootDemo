@@ -70,7 +70,7 @@ public class AccountControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/account")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"customerId\":1,\"countryCode\":\"BD\",\"currencyCodes\":[\"USD\",\"EUR\"]}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountId").value(1))
                 .andExpect(jsonPath("$.customerId").value(1))
                 .andExpect(jsonPath("$.balance[0].amount").value(5.0))

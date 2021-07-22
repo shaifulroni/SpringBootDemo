@@ -6,6 +6,8 @@ import co.modularbank.banking.controller.model.TransactionRequest;
 import co.modularbank.banking.controller.model.TransactionResponse;
 import co.modularbank.banking.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,10 +20,10 @@ public class TransactionController {
     TransactionService transactionService;
 
     @PostMapping
-    public SaveTransactionResponse makeTransaction(
+    public ResponseEntity<SaveTransactionResponse> makeTransaction(
             @Valid @RequestBody TransactionRequest request
     ) throws TransactionException {
-        return transactionService.makeTransaction(request);
+        return new ResponseEntity<>(transactionService.makeTransaction(request), HttpStatus.CREATED);
     }
 
     @GetMapping("/account/{id}")

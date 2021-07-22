@@ -5,6 +5,8 @@ import co.modularbank.banking.controller.model.AccountRequest;
 import co.modularbank.banking.controller.model.AccountResponse;
 import co.modularbank.banking.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,7 +25,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public AccountResponse createAccount(@Valid @RequestBody AccountRequest request) throws AccountException {
-        return accountService.createAccount(request);
+    public ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody AccountRequest request) throws AccountException {
+        return new ResponseEntity<>(accountService.createAccount(request), HttpStatus.CREATED);
     }
 }

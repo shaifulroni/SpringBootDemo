@@ -84,7 +84,7 @@ public class TransactionTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(2.2, 0.0001)))
                 .andExpect(jsonPath("$.amount").value(IsCloseTo.closeTo(2.2, 0.0001)))
                 .andExpect(jsonPath("$.currency").value("EUR"));
@@ -95,25 +95,25 @@ public class TransactionTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(2.2, 0.0001)));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(4.4, 0.0001)));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(6.6, 0.0001)));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"OUT\",\"description\":\"Transaction 1\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(4.4, 0.0001)));
     }
 

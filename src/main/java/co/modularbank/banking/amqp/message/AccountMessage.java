@@ -21,6 +21,10 @@ public class AccountMessage extends BaseRabbitMessage {
         return payload;
     }
 
+    public void setPayload(AccountResponse payload) {
+        this.payload = payload;
+    }
+
     @Override
     public String toString() {
         return "AccountMessage{" +

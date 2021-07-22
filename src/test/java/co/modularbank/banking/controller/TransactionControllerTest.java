@@ -42,7 +42,7 @@ public class TransactionControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":1,\"amount\":55.0,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountId").value(1))
                 .andExpect(jsonPath("$.amount").value(55.0))
                 .andExpect(jsonPath("$.currency").value("EUR"))

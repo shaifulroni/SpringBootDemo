@@ -83,7 +83,7 @@ public class AccountTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/account")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"customerId\":" + customerId +",\"countryCode\":\"BD\",\"currencyCodes\":[\"USD\",\"EUR\"]}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountId").isNumber())
                 .andExpect(jsonPath("$.customerId").value(customerId))
                 .andExpect(jsonPath("$.balance[0].amount").value(0.0))
@@ -107,7 +107,7 @@ public class AccountTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/account")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"customerId\":" + customerId +",\"countryCode\":\"EE\",\"currencyCodes\":[\"USD\",\"EUR\"]}"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/account")
                 .contentType(MediaType.APPLICATION_JSON)
