@@ -4,16 +4,18 @@ import co.modularbank.banking.amqp.message.BaseRabbitMessage;
 import co.modularbank.banking.service.RabbitService;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RabbitServiceImpl implements RabbitService {
-    @Autowired
-    RabbitTemplate rabbitTemplate;
+    private RabbitTemplate rabbitTemplate;
+    private TopicExchange rabbitExchange;
 
-    @Autowired
-    TopicExchange rabbitExchange;
+    public RabbitServiceImpl(RabbitTemplate rabbitTemplate,
+                             TopicExchange rabbitExchange) {
+        this.rabbitTemplate = rabbitTemplate;
+        this.rabbitExchange = rabbitExchange;
+    }
 
     @Override
     public void sendMessage(BaseRabbitMessage message) {

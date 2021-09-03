@@ -6,15 +6,17 @@ import co.modularbank.banking.controller.model.CustomerResponse;
 import co.modularbank.banking.domain.Customer;
 import co.modularbank.banking.mapper.CustomerMapper;
 import co.modularbank.banking.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
-    @Autowired
-    CustomerMapper customerMapper;
+    private CustomerMapper customerMapper;
+
+    public CustomerServiceImpl(CustomerMapper customerMapper) {
+        this.customerMapper = customerMapper;
+    }
 
     @Override
     public CustomerResponse addCustomer(CustomerRequest request) throws CustomerException {

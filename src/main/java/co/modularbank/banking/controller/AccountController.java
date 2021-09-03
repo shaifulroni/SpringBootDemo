@@ -4,7 +4,6 @@ import co.modularbank.banking.controller.error.AccountException;
 import co.modularbank.banking.controller.model.AccountRequest;
 import co.modularbank.banking.controller.model.AccountResponse;
 import co.modularbank.banking.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +13,11 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/account")
 public class AccountController {
-    @Autowired
     private AccountService accountService;
+
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @GetMapping("/{id}")
     public AccountResponse getAccount(

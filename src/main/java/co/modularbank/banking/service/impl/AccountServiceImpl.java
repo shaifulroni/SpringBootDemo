@@ -10,7 +10,6 @@ import co.modularbank.banking.service.AccountService;
 import co.modularbank.banking.service.RabbitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +22,27 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
     private final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
-    @Autowired private CountryMapper countryMapper;
-    @Autowired private AccountMapper accountMapper;
-    @Autowired private BalanceMapper balanceMapper;
-    @Autowired private CurrencyMapper currencyMapper;
-    @Autowired private CustomerMapper customerMapper;
+    private CountryMapper countryMapper;
+    private AccountMapper accountMapper;
+    private BalanceMapper balanceMapper;
+    private CurrencyMapper currencyMapper;
+    private CustomerMapper customerMapper;
 
-    @Autowired private RabbitService rabbitService;
+    private RabbitService rabbitService;
+
+    public AccountServiceImpl(CountryMapper countryMapper,
+                              AccountMapper accountMapper,
+                              BalanceMapper balanceMapper,
+                              CurrencyMapper currencyMapper,
+                              CustomerMapper customerMapper,
+                              RabbitService rabbitService) {
+        this.countryMapper = countryMapper;
+        this.accountMapper = accountMapper;
+        this.balanceMapper = balanceMapper;
+        this.currencyMapper = currencyMapper;
+        this.customerMapper = customerMapper;
+        this.rabbitService = rabbitService;
+    }
 
     public AccountResponse getAccountById(long id) throws AccountException{
         Optional<Account> account = accountMapper.getAccountById(id);
@@ -75,7 +88,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Transactional
-    private Optional<Account> saveAccount(Customer customer, Country country, List<Currency> currencyList) {
+    Optional<Account> saveAccount(Customer customer, Country country, List<Currency> currencyList) {
         Account account = new Account();
         account.setCountry(country);
         account.setCustomer(customer);

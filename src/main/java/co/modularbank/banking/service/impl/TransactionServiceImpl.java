@@ -15,7 +15,6 @@ import co.modularbank.banking.mapper.CurrencyMapper;
 import co.modularbank.banking.mapper.TransactionMapper;
 import co.modularbank.banking.service.RabbitService;
 import co.modularbank.banking.service.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,20 +23,23 @@ import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
-    @Autowired
     private TransactionMapper transactionMapper;
-
-    @Autowired
     private CurrencyMapper currencyMapper;
-
-    @Autowired
     private BalanceMapper balanceMapper;
-
-    @Autowired
     private AccountMapper accountMapper;
-
-    @Autowired
     private RabbitService rabbitService;
+
+    public TransactionServiceImpl(TransactionMapper transactionMapper,
+                                  CurrencyMapper currencyMapper,
+                                  BalanceMapper balanceMapper,
+                                  AccountMapper accountMapper,
+                                  RabbitService rabbitService) {
+        this.transactionMapper = transactionMapper;
+        this.currencyMapper = currencyMapper;
+        this.balanceMapper = balanceMapper;
+        this.accountMapper = accountMapper;
+        this.rabbitService = rabbitService;
+    }
 
     public SaveTransactionResponse makeTransaction(TransactionRequest transactionRequest) throws TransactionException {
         Transaction transaction = new Transaction();
