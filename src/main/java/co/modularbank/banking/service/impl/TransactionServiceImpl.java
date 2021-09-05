@@ -18,6 +18,7 @@ import co.modularbank.banking.service.TransactionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,13 +57,13 @@ public class TransactionServiceImpl implements TransactionService {
         Balance currentBalance = balanceMapper.getAccountBalanceWithCurrency(transaction.getAccountId(), transaction.getCurrency().getId())
                 .orElseThrow(() -> new TransactionException("Currency not available for this account"));
 
-        double amountChange = transaction.getAmount();
+        BigDecimal amountChange = transaction.getAmount();
         if(transaction.getDirection() == TransactionDirection.OUT) {
-            amountChange = -amountChange;
+            amountChange = amountChange.negate();
         }
-        double updatedBalance = currentBalance.getAmount() + amountChange;
+        BigDecimal updatedBalance = currentBalance.getAmount().add(amountChange);
 
-        if(updatedBalance < 0.0)
+        if(updatedBalance.compareTo(BigDecimal.ZERO) < 0)
             throw new TransactionException("Insufficient funds");
 
         long transactionId = saveTransaction(transaction, updatedBalance);
@@ -88,7 +89,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Transactional
-    private long saveTransaction(Transaction transaction, double updatedBalance) {
+    private long saveTransaction(Transaction transaction, BigDecimal updatedBalance) {
         balanceMapper.updateAccountBalanceWithCurrency(transaction.getAccountId(), transaction.getCurrency().getId(), updatedBalance);
         return transactionMapper.insertTransaction(transaction);
     }

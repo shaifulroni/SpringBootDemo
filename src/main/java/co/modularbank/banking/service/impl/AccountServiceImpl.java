@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -99,6 +100,7 @@ public class AccountServiceImpl implements AccountService {
         currencyList.forEach(currency -> {
             Balance balance = new Balance();
             balance.setCurrency(currency);
+            balance.setAmount(BigDecimal.ZERO);
             balanceMapper.addBalanceToAccount(accountId, balance);
         });
         return accountMapper.getAccountById(accountId);
