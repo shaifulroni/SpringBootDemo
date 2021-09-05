@@ -19,7 +19,7 @@
         </association>
         <collection property="balanceList" ofType="co.modularbank.banking.domain.Balance">
             <id column="balance_id" property="id" />
-            <result column="balance_amount" property="amount"/>
+            <result column="balance_amount" property="amount" javaType="java.math.BigDecimal" jdbcType="NUMERIC"/>
             <association column="currency_id" property="currency" javaType="co.modularbank.banking.domain.Currency">
                 <id column="currency_id" property="id" />
                 <result column="currency_name" property="name"/>

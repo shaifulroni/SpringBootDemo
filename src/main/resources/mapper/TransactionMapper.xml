@@ -6,7 +6,7 @@
     <resultMap type="co.modularbank.banking.domain.Transaction" id="transactionMap">
         <id column="id" property="id" />
         <result column="account_id" property="accountId" />
-        <result column="amount" property="amount" />
+        <result column="amount" property="amount" javaType="java.math.BigDecimal" jdbcType="NUMERIC" />
         <result column="direction" property="direction" javaType="co.modularbank.banking.domain.TransactionDirection" jdbcType="VARCHAR" />
         <result column="description" property="description" />
         <association column="currency_id" property="currency" javaType="co.modularbank.banking.domain.Currency">

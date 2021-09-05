@@ -4,6 +4,7 @@ import co.modularbank.banking.domain.Balance;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +17,5 @@ public interface BalanceMapper {
 
     public long addBalanceToAccount(@Param("accountId") long accountId, Balance balance);
 
-    public void updateAccountBalanceWithCurrency(long accountId, long currencyId, double amount);
+    public void updateAccountBalanceWithCurrency(long accountId, long currencyId, BigDecimal amount);
 }

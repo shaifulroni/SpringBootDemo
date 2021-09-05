@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS account (
 
 CREATE TABLE IF NOT EXISTS balance (
     id bigserial PRIMARY KEY,
-    amount numeric DEFAULT 0.0,
+    amount numeric NOT NULL DEFAULT 0.0,
     account_id bigint NOT NULL,
     currency_id integer NOT NULL,
     CONSTRAINT fk_account

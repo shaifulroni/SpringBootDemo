@@ -5,7 +5,7 @@
 <mapper namespace="co.modularbank.banking.mapper.BalanceMapper">
     <resultMap type="co.modularbank.banking.domain.Balance" id="balanceMap">
         <id column="id" property="id" />
-        <result column="amount" property="amount"/>
+        <result column="amount" property="amount" javaType="java.math.BigDecimal" jdbcType="NUMERIC"/>
         <association column="currency_id" property="currency" javaType="co.modularbank.banking.domain.Currency">
             <id column="currency_id" property="id" />
             <result column="name" property="name"/>
