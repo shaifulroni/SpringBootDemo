@@ -12,10 +12,14 @@ import java.util.UUID;
 
 @SpringBootTest
 public class CustomerMapperTest {
-    @Autowired
-    CustomerMapper customerMapper;
+    private CustomerMapper customerMapper;
 
     long customerId;
+
+    @Autowired
+    private CustomerMapperTest(CustomerMapper customerMapper) {
+        this.customerMapper = customerMapper;
+    }
 
     @Test
     void testInsertCustomer() {

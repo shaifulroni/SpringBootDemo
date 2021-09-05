@@ -26,11 +26,15 @@ import java.util.List;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AccountControllerTest {
-    @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
     AccountService accountService;
+
+    @Autowired
+    public AccountControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
 
     @Test
     void givenInvalidAccount_whenGetAccountById_thenCheckFailed() throws Exception {

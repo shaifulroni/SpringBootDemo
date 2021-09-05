@@ -26,20 +26,24 @@ import java.util.UUID;
 
 @SpringBootTest
 public class TransactionServiceTest {
-    @Autowired
-    CustomerMapper customerMapper;
-
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
-    TransactionService transactionService;
+    private CustomerMapper customerMapper;
+    private AccountService accountService;
+    private TransactionService transactionService;
 
     @MockBean
     RabbitService rabbitService;
 
     private long customerId;
     private long accountId;
+
+    @Autowired
+    public TransactionServiceTest(CustomerMapper customerMapper,
+                                  AccountService accountService,
+                                  TransactionService transactionService) {
+        this.customerMapper = customerMapper;
+        this.accountService = accountService;
+        this.transactionService = transactionService;
+    }
 
     @BeforeEach
     void setup() {

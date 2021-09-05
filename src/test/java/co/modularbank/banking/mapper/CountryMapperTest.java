@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @SpringBootTest
 public class CountryMapperTest {
+    private CountryMapper countryMapper;
+
     @Autowired
-    CountryMapper countryMapper;
+    public CountryMapperTest(CountryMapper countryMapper) {
+        this.countryMapper = countryMapper;
+    }
 
     @Test
     void testCountryExists() {

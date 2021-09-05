@@ -2,6 +2,7 @@ package co.modularbank.banking.integration;
 
 import co.modularbank.banking.amqp.RabbitMessageListener;
 import co.modularbank.banking.mapper.CustomerMapper;
+import co.modularbank.banking.service.RabbitService;
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.hamcrest.number.IsCloseTo;
@@ -25,16 +26,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AccountTransactionTest {
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    CustomerMapper customerMapper;
+    private MockMvc mockMvc;
+    private CustomerMapper customerMapper;
 
     @MockBean
     RabbitMessageListener listener;
 
+    @MockBean
+    RabbitService rabbitService;
+
     private Integer customerId;
+
+    @Autowired
+    public AccountTransactionTest(MockMvc mockMvc,
+                                  CustomerMapper customerMapper) {
+        this.mockMvc = mockMvc;
+        this.customerMapper = customerMapper;
+    }
 
     @Test
     void testAccountAndTransaction() throws Exception {

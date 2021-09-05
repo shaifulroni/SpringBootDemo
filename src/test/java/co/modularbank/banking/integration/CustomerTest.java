@@ -21,16 +21,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CustomerTest {
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    CustomerMapper customerMapper;
-
-    @Autowired
-    CustomerService accountService;
+    private MockMvc mockMvc;
+    private CustomerMapper customerMapper;
 
     private Integer customerId;
+
+    @Autowired
+    public CustomerTest(MockMvc mockMvc,
+                        CustomerMapper customerMapper) {
+        this.mockMvc = mockMvc;
+        this.customerMapper = customerMapper;
+    }
 
     @Test
     void givenNewCustomer_whenAddCustomer_thenCheckAdded() throws Exception {

@@ -20,11 +20,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CustomerControllerTest {
-    @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
     CustomerService customerService;
+
+    @Autowired
+    public CustomerControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
 
     @Test
     void givenExistingEmail_whenAddCustomer_thenCheckFailed() throws Exception {

@@ -5,6 +5,7 @@ import co.modularbank.banking.controller.model.AccountRequest;
 import co.modularbank.banking.domain.Customer;
 import co.modularbank.banking.mapper.CustomerMapper;
 import co.modularbank.banking.service.AccountService;
+import co.modularbank.banking.service.RabbitService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,19 +29,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AccountTest {
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    CustomerMapper customerMapper;
-
-    @Autowired
-    AccountService accountService;
+    private MockMvc mockMvc;
+    private CustomerMapper customerMapper;
+    private AccountService accountService;
 
     @MockBean
     RabbitMessageListener rabbitMessageListener;
 
+    @MockBean
+    RabbitService rabbitService;
+
     private long customerId;
+
+    @Autowired
+    public AccountTest(MockMvc mockMvc,
+                       CustomerMapper customerMapper,
+                       AccountService accountService) {
+        this.mockMvc = mockMvc;
+        this.customerMapper = customerMapper;
+        this.accountService = accountService;
+    }
 
     @BeforeEach
     void setup() {

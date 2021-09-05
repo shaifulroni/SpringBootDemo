@@ -10,9 +10,12 @@ import java.util.Optional;
 
 @SpringBootTest
 public class CurrencyMapperTest {
+    private CurrencyMapper currencyMapper;
 
     @Autowired
-    public CurrencyMapper currencyMapper;
+    public CurrencyMapperTest(CurrencyMapper currencyMapper) {
+        this.currencyMapper = currencyMapper;
+    }
 
     @Test
     public void testGetCurrencyById(){

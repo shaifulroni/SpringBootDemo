@@ -22,13 +22,17 @@ import java.util.UUID;
 
 @SpringBootTest
 public class CustomerServiceTest {
-    @Autowired
-    CustomerMapper customerMapper;
-
-    @Autowired
-    CustomerService customerService;
+    private CustomerMapper customerMapper;
+    private CustomerService customerService;
 
     private long customerId;
+
+    @Autowired
+    public CustomerServiceTest(CustomerMapper customerMapper,
+                               CustomerService customerService) {
+        this.customerMapper = customerMapper;
+        this.customerService = customerService;
+    }
 
     @Test
     void givenCustomerInfo_WhenAddCustomer_CheckAdded() throws Exception {

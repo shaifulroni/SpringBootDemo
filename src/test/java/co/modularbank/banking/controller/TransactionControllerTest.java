@@ -28,11 +28,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TransactionControllerTest {
-    @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
     TransactionService transactionService;
+
+    @Autowired
+    public TransactionControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
 
     @Test
     void givenTransactionRequest_whenMakeTransaction_thenCheckSuccess() throws Exception {

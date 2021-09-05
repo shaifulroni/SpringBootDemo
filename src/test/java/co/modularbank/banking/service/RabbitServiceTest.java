@@ -14,7 +14,12 @@ import java.math.BigDecimal;
 
 @SpringBootTest
 public class RabbitServiceTest {
-    @Autowired RabbitService rabbitService;
+    private RabbitService rabbitService;
+
+    @Autowired
+    public RabbitServiceTest(RabbitService rabbitService) {
+        this.rabbitService = rabbitService;
+    }
 
     @Test
     void testSendRabbitMessage(){

@@ -7,6 +7,7 @@ import co.modularbank.banking.domain.Customer;
 import co.modularbank.banking.domain.TransactionDirection;
 import co.modularbank.banking.mapper.CustomerMapper;
 import co.modularbank.banking.service.AccountService;
+import co.modularbank.banking.service.RabbitService;
 import co.modularbank.banking.service.TransactionService;
 import org.hamcrest.Matchers;
 import org.hamcrest.number.IsCloseTo;
@@ -33,23 +34,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TransactionTest {
-    @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
+    private CustomerMapper customerMapper;
+    private AccountService accountService;
+    private TransactionService transactionService;
 
-    @Autowired
-    CustomerMapper customerMapper;
-
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
-    TransactionService transactionService;
+    @MockBean
+    RabbitService rabbitService;
 
     @MockBean
     RabbitMessageListener rabbitMessageListener;
 
     private long customerId;
     private long accountId;
+
+    @Autowired
+    public TransactionTest(MockMvc mockMvc,
+                           CustomerMapper customerMapper,
+                           AccountService accountService,
+                           TransactionService transactionService) {
+        this.mockMvc = mockMvc;
+        this.customerMapper = customerMapper;
+        this.accountService = accountService;
+        this.transactionService = transactionService;
+    }
 
     @BeforeEach
     void setup() {

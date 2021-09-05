@@ -16,15 +16,28 @@ import java.util.UUID;
 
 @SpringBootTest
 public class TransactionMapperTest {
-    @Autowired TransactionMapper transactionMapper;
-    @Autowired CurrencyMapper currencyMapper;
-    @Autowired CustomerMapper customerMapper;
-    @Autowired AccountMapper accountMapper;
-    @Autowired CountryMapper countryMapper;
+    private TransactionMapper transactionMapper;
+    private CurrencyMapper currencyMapper;
+    private CustomerMapper customerMapper;
+    private AccountMapper accountMapper;
+    private CountryMapper countryMapper;
 
     private Customer testCustomer;
     private Account testAccount;
     private Country testCountry;
+
+    @Autowired
+    public TransactionMapperTest(TransactionMapper transactionMapper,
+                                 CurrencyMapper currencyMapper,
+                                 CustomerMapper customerMapper,
+                                 AccountMapper accountMapper,
+                                 CountryMapper countryMapper) {
+        this.transactionMapper = transactionMapper;
+        this.currencyMapper = currencyMapper;
+        this.customerMapper = customerMapper;
+        this.accountMapper = accountMapper;
+        this.countryMapper = countryMapper;
+    }
 
     @BeforeEach
     void setup() {
