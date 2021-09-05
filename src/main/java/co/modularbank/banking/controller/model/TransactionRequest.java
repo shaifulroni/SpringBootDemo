@@ -4,13 +4,14 @@ import co.modularbank.banking.domain.TransactionDirection;
 import co.modularbank.banking.validator.EnumValidator;
 
 import javax.validation.constraints.*;
+import java.math.BigDecimal;
 
 public class TransactionRequest {
     @Min(value = 1, message = "Invalid account number")
     private long accountId;
 
     @Positive(message = "Invalid amount")
-    private double amount;
+    private BigDecimal amount;
 
     @Size(min = 3, max = 3, message = "Invalid currency")
     private String currency;
@@ -32,11 +33,11 @@ public class TransactionRequest {
         this.accountId = accountId;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

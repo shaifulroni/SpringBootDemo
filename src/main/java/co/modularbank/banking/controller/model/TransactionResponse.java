@@ -1,16 +1,18 @@
 package co.modularbank.banking.controller.model;
 
+import java.math.BigDecimal;
+
 public class TransactionResponse {
     protected long accountId;
     protected long transactionId;
-    protected double amount;
+    protected BigDecimal amount;
     protected String currency;
     protected String direction;
     protected String description;
 
     public TransactionResponse(){}
 
-    public TransactionResponse(long accountId, long transactionId, double amount, String currency, String direction, String description) {
+    public TransactionResponse(long accountId, long transactionId, BigDecimal amount, String currency, String direction, String description) {
         this.accountId = accountId;
         this.transactionId = transactionId;
         this.amount = amount;
@@ -35,11 +37,11 @@ public class TransactionResponse {
         this.transactionId = transactionId;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

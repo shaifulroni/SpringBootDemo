@@ -1,9 +1,11 @@
 package co.modularbank.banking.domain;
 
+import java.math.BigDecimal;
+
 public class Transaction {
     private long id;
     private long accountId;
-    private double amount;
+    private BigDecimal amount;
     private Currency currency;
     private TransactionDirection direction;
     private String description;
@@ -24,11 +26,11 @@ public class Transaction {
         this.accountId = accountId;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

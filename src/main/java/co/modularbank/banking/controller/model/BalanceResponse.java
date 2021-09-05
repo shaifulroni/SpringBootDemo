@@ -1,21 +1,23 @@
 package co.modularbank.banking.controller.model;
 
+import java.math.BigDecimal;
+
 public class BalanceResponse {
-    private double amount;
+    private BigDecimal amount;
     private String currency;
 
     public BalanceResponse(){}
 
-    public BalanceResponse(double amount, String currency) {
+    public BalanceResponse(BigDecimal amount, String currency) {
         this.amount = amount;
         this.currency = currency;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
