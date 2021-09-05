@@ -6,6 +6,7 @@ import co.modularbank.banking.controller.model.TransactionRequest;
 import co.modularbank.banking.controller.model.TransactionResponse;
 import co.modularbank.banking.domain.TransactionDirection;
 import co.modularbank.banking.service.TransactionService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,14 @@ public class TransactionControllerTest {
 
     @Test
     void givenTransactionRequest_whenMakeTransaction_thenCheckSuccess() throws Exception {
-        SaveTransactionResponse saveResponse = new SaveTransactionResponse(1, 1, 55.0, "EUR", TransactionDirection.IN.name(), "Transaction 1", 55.0);
+        SaveTransactionResponse saveResponse = new SaveTransactionResponse(
+                1,
+                1,
+                BigDecimal.valueOf(55.0),
+                "EUR",
+                TransactionDirection.IN.name(),
+                "Transaction 1",
+                BigDecimal.valueOf(55.0));
 
         Mockito.when(transactionService.makeTransaction(ArgumentMatchers.any(TransactionRequest.class)))
                 .thenReturn(saveResponse);
@@ -44,16 +53,22 @@ public class TransactionControllerTest {
                 .content("{\"accountId\":1,\"amount\":55.0,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountId").value(1))
-                .andExpect(jsonPath("$.amount").value(55.0))
+                .andExpect(jsonPath("$.amount", Matchers.comparesEqualTo(BigDecimal.valueOf(55.0)), BigDecimal.class))
                 .andExpect(jsonPath("$.currency").value("EUR"))
                 .andExpect(jsonPath("$.direction").value("IN"))
-                .andExpect(jsonPath("$.balance").value(55.0));
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(55.0)), BigDecimal.class));
     }
 
     @Test
     void givenAccountId_whenGetTransactionList_thenCheckCorrect() throws Exception {
         List<TransactionResponse> transactionList = new ArrayList<>();
-        transactionList.add(new TransactionResponse(1, 1, 55.0, "EUR", TransactionDirection.IN.name(), "Transaction 1"));
+        transactionList.add(new TransactionResponse(
+                1,
+                1,
+                BigDecimal.valueOf(55.0),
+                "EUR",
+                TransactionDirection.IN.name(),
+                "Transaction 1"));
 
         Mockito.when(transactionService.getTransactionsForAccount(1))
                 .thenReturn(transactionList);
@@ -62,7 +77,7 @@ public class TransactionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].accountId").value(1))
-                .andExpect(jsonPath("$[0].amount").value(55.0))
+                .andExpect(jsonPath("$[0].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(55.0)), BigDecimal.class))
                 .andExpect(jsonPath("$[0].currency").value("EUR"))
                 .andExpect(jsonPath("$[0].direction").value("IN"));
     }

@@ -1,6 +1,8 @@
 package co.modularbank.banking.mapper;
 
 import co.modularbank.banking.domain.*;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +45,7 @@ public class BalanceMapperTest {
     @Test
     void testAddBalanceWithInvalidAccount() {
         Balance balance = new Balance();
-        balance.setAmount(2.2);
+        balance.setAmount(BigDecimal.valueOf(2.2));
         balance.setCurrency(currencyMapper.getCurrencyByShortName("USD").orElseThrow());
         Assertions.assertThrows(Exception.class, () -> balanceMapper.addBalanceToAccount(9999, balance));
     }
@@ -50,23 +53,23 @@ public class BalanceMapperTest {
     @Test
     void testAddBalanceWithCurrencyAndGet() {
         Balance balance = new Balance();
-        balance.setAmount(1.1);
+        balance.setAmount(BigDecimal.valueOf(1.1));
 
         balance.setCurrency(currencyMapper.getCurrencyByShortName("EUR").orElseThrow());
         long balanceId = balanceMapper.addBalanceToAccount(testAccount.getId(), balance);
         Assertions.assertTrue(balanceId > 0);
 
-        balance.setAmount(2.2);
+        balance.setAmount(BigDecimal.valueOf(2.2));
         balance.setCurrency(currencyMapper.getCurrencyByShortName("USD").orElseThrow());
         balanceId = balanceMapper.addBalanceToAccount(testAccount.getId(), balance);
         Assertions.assertTrue(balanceId > 0);
 
-        balance.setAmount(3.3);
+        balance.setAmount(BigDecimal.valueOf(3.3));
         balance.setCurrency(currencyMapper.getCurrencyByShortName("GBP").orElseThrow());
         balanceId = balanceMapper.addBalanceToAccount(testAccount.getId(), balance);
         Assertions.assertTrue(balanceId > 0);
 
-        balance.setAmount(4.4);
+        balance.setAmount(BigDecimal.valueOf(4.4));
         balance.setCurrency(currencyMapper.getCurrencyByShortName("SEK").orElseThrow());
         balanceId = balanceMapper.addBalanceToAccount(testAccount.getId(), balance);
         Assertions.assertTrue(balanceId > 0);
@@ -78,7 +81,7 @@ public class BalanceMapperTest {
     @Test
     void testGetAccountBalanceWithCurrency() {
         Balance balance = new Balance();
-        balance.setAmount(2.2);
+        balance.setAmount(BigDecimal.valueOf(2.2));
 
         Currency euro = currencyMapper.getCurrencyByShortName("EUR").orElseThrow();
         balance.setCurrency(euro);
@@ -87,39 +90,39 @@ public class BalanceMapperTest {
 
         Balance acBalance = balanceMapper.getAccountBalanceWithCurrency(testAccount.getId(), euro.getId()).orElseThrow();
         Assertions.assertEquals("Euro", acBalance.getCurrency().getName());
-        Assertions.assertEquals(2.2, acBalance.getAmount());
+        MatcherAssert.assertThat(acBalance.getAmount(), Matchers.comparesEqualTo(BigDecimal.valueOf(2.20)));
     }
 
     @Test
     void testUpdateAccountBalanceWithCurrency() {
         Balance balance = new Balance();
-        balance.setAmount(2.2);
+        balance.setAmount(BigDecimal.valueOf(2.2));
 
         Currency euro = currencyMapper.getCurrencyByShortName("EUR").orElseThrow();
         balance.setCurrency(euro);
         long balanceId = balanceMapper.addBalanceToAccount(testAccount.getId(), balance);
         Assertions.assertTrue(balanceId > 0);
 
-        balanceMapper.updateAccountBalanceWithCurrency(testAccount.getId(), euro.getId(), 9.9);
+        balanceMapper.updateAccountBalanceWithCurrency(testAccount.getId(), euro.getId(), BigDecimal.valueOf(9.9));
         Balance updatedBalance = balanceMapper.getAccountBalanceWithCurrency(testAccount.getId(), euro.getId()).orElseThrow();
-        Assertions.assertEquals(9.9, updatedBalance.getAmount());
+        MatcherAssert.assertThat(updatedBalance.getAmount(), Matchers.comparesEqualTo(BigDecimal.valueOf(9.9)));
 
-        balanceMapper.updateAccountBalanceWithCurrency(testAccount.getId(), euro.getId(), 0);
+        balanceMapper.updateAccountBalanceWithCurrency(testAccount.getId(), euro.getId(), BigDecimal.ZERO);
         updatedBalance = balanceMapper.getAccountBalanceWithCurrency(testAccount.getId(), euro.getId()).orElseThrow();
-        Assertions.assertEquals(0.0, updatedBalance.getAmount());
+        MatcherAssert.assertThat(updatedBalance.getAmount(), Matchers.comparesEqualTo(BigDecimal.ZERO));
     }
 
     @Test
     void testUpdateAccountBalanceWithInvalidAmount() {
         Balance balance = new Balance();
-        balance.setAmount(2.2);
+        balance.setAmount(BigDecimal.valueOf(2.2));
 
         Currency euro = currencyMapper.getCurrencyByShortName("EUR").orElseThrow();
         balance.setCurrency(euro);
         long balanceId = balanceMapper.addBalanceToAccount(testAccount.getId(), balance);
         Assertions.assertTrue(balanceId > 0);
 
-        Assertions.assertThrows(Exception.class, () -> balanceMapper.updateAccountBalanceWithCurrency(testAccount.getId(), euro.getId(), -9.9));
+        Assertions.assertThrows(Exception.class, () -> balanceMapper.updateAccountBalanceWithCurrency(testAccount.getId(), euro.getId(), BigDecimal.valueOf(-9.9)));
     }
 
     @AfterEach

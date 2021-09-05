@@ -6,6 +6,8 @@ import co.modularbank.banking.controller.model.AccountRequest;
 import co.modularbank.banking.controller.model.AccountResponse;
 import co.modularbank.banking.domain.Customer;
 import co.modularbank.banking.mapper.CustomerMapper;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -63,7 +66,7 @@ public class AccountServiceTest {
 
                 Assertions.assertEquals(customerId, existingAccount.getCustomerId());
                 Assertions.assertEquals(2, existingAccount.getBalance().size());
-                Assertions.assertEquals(0, existingAccount.getBalance().get(0).getAmount());
+                MatcherAssert.assertThat(existingAccount.getBalance().get(0).getAmount(), Matchers.comparesEqualTo(BigDecimal.ZERO));
             });
         });
     }
@@ -86,7 +89,7 @@ public class AccountServiceTest {
 
             Assertions.assertEquals(customerId, createdAccount.getCustomerId());
             Assertions.assertEquals(2, createdAccount.getBalance().size());
-            Assertions.assertEquals(0, createdAccount.getBalance().get(0).getAmount());
+            MatcherAssert.assertThat(createdAccount.getBalance().get(0).getAmount(), Matchers.comparesEqualTo(BigDecimal.ZERO));
         });
     }
 

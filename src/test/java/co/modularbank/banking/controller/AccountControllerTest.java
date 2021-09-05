@@ -5,6 +5,7 @@ import co.modularbank.banking.controller.model.AccountRequest;
 import co.modularbank.banking.controller.model.AccountResponse;
 import co.modularbank.banking.controller.model.BalanceResponse;
 import co.modularbank.banking.service.AccountService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class AccountControllerTest {
     @Test
     void givenValidAccount_whenGetAccountById_thenCheckCorrect() throws Exception {
         List<BalanceResponse> balanceList = new ArrayList<>();
-        balanceList.add(new BalanceResponse(5.0, "USD"));
+        balanceList.add(new BalanceResponse(BigDecimal.valueOf(5.0), "USD"));
 
         Mockito.when(accountService.getAccountById(1))
                 .thenReturn(new AccountResponse(1, 1, balanceList));
@@ -54,15 +56,15 @@ public class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(1))
                 .andExpect(jsonPath("$.customerId").value(1))
-                .andExpect(jsonPath("$.balance[0].amount").value(5.0))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(5.0)), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").value("USD"));
     }
 
     @Test
     void givenCustomerIdCountryCurrency_whenCreateAccount_thenCheckCreated() throws Exception {
         List<BalanceResponse> balanceList = new ArrayList<>();
-        balanceList.add(new BalanceResponse(5.0, "USD"));
-        balanceList.add(new BalanceResponse(55, "EUR"));
+        balanceList.add(new BalanceResponse(BigDecimal.valueOf(5.0), "USD"));
+        balanceList.add(new BalanceResponse(BigDecimal.valueOf(55), "EUR"));
 
         Mockito.when(accountService.createAccount(any(AccountRequest.class)))
                 .thenReturn(new AccountResponse(1, 1, balanceList));
@@ -73,9 +75,9 @@ public class AccountControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountId").value(1))
                 .andExpect(jsonPath("$.customerId").value(1))
-                .andExpect(jsonPath("$.balance[0].amount").value(5.0))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(5.0)), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").value("USD"))
-                .andExpect(jsonPath("$.balance[1].amount").value(55))
+                .andExpect(jsonPath("$.balance[1].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(55)), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[1].currency").value("EUR"));
     }
 

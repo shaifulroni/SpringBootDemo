@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -72,7 +73,7 @@ public class TransactionTest {
     private TransactionRequest getTransactionRequest(long tempAccountId) {
         TransactionRequest request = new TransactionRequest();
         request.setAccountId(tempAccountId);
-        request.setAmount(2.2);
+        request.setAmount(BigDecimal.valueOf(2.2));
         request.setCurrency("USD");
         request.setDirection(TransactionDirection.IN.name());
         request.setDescription("Transaction #In -> $2.2");
@@ -85,8 +86,8 @@ public class TransactionTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(2.2, 0.0001)))
-                .andExpect(jsonPath("$.amount").value(IsCloseTo.closeTo(2.2, 0.0001)))
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)), BigDecimal.class))
+                .andExpect(jsonPath("$.amount", Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)), BigDecimal.class))
                 .andExpect(jsonPath("$.currency").value("EUR"));
     }
 
@@ -96,25 +97,25 @@ public class TransactionTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(2.2, 0.0001)));
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)), BigDecimal.class));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(4.4, 0.0001)));
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(4.4)), BigDecimal.class));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(6.6, 0.0001)));
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(6.6)), BigDecimal.class));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"EUR\",\"direction\":\"OUT\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(4.4, 0.0001)));
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(4.4)), BigDecimal.class));
     }
 
     @Test
@@ -173,7 +174,7 @@ public class TransactionTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(4)))
                 .andExpect(jsonPath("$[0].direction").value("OUT"))
-                .andExpect(jsonPath("$[0].amount").value(IsCloseTo.closeTo(2.2, 0.0001)));
+                .andExpect(jsonPath("$[0].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)), BigDecimal.class));
     }
     @Test
     void givenInvalidAccountId_whenRequestAllTransaction_thenCheckFailed() throws Exception {

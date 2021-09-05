@@ -10,6 +10,8 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+
 @SpringBootTest
 public class RabbitServiceTest {
     @Autowired RabbitService rabbitService;
@@ -19,11 +21,11 @@ public class RabbitServiceTest {
         SaveTransactionResponse response = new SaveTransactionResponse(
                 1,
                 1,
-                5.5,
+                BigDecimal.valueOf(5.5),
                 "EUR",
                 TransactionDirection.IN.name(),
                 "Description 1",
-                20.5
+                BigDecimal.valueOf(20.5)
         );
         BaseRabbitMessage message = new TransactionMessage(
                 "Account created with id - 1",

@@ -3,6 +3,7 @@ package co.modularbank.banking.integration;
 import co.modularbank.banking.amqp.RabbitMessageListener;
 import co.modularbank.banking.mapper.CustomerMapper;
 import com.jayway.jsonpath.JsonPath;
+import org.hamcrest.Matchers;
 import org.hamcrest.number.IsCloseTo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -57,7 +59,7 @@ public class AccountTransactionTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountId").isNumber())
                 .andExpect(jsonPath("$.customerId").value(customerId))
-                .andExpect(jsonPath("$.balance[0].amount").value(0.0))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.ZERO), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").value("USD"))
                 .andReturn();
 
@@ -68,7 +70,7 @@ public class AccountTransactionTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":2.2,\"currency\":\"USD\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(2.2, 0.0001)));
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)), BigDecimal.class));
 
         // Check balance
         mockMvc.perform(MockMvcRequestBuilders.get("/account/" + accountId)
@@ -76,7 +78,7 @@ public class AccountTransactionTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(accountId))
                 .andExpect(jsonPath("$.customerId").value(customerId))
-                .andExpect(jsonPath("$.balance[0].amount").value(IsCloseTo.closeTo(2.2,0.0001)))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").value("USD"));
 
         // Make another deposit
@@ -84,7 +86,7 @@ public class AccountTransactionTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":5.8,\"currency\":\"USD\",\"direction\":\"IN\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(8.0, 0.0001)));
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(8.0)), BigDecimal.class));
 
         // Check balance
         mockMvc.perform(MockMvcRequestBuilders.get("/account/" + accountId)
@@ -92,7 +94,7 @@ public class AccountTransactionTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(accountId))
                 .andExpect(jsonPath("$.customerId").value(customerId))
-                .andExpect(jsonPath("$.balance[0].amount").value(IsCloseTo.closeTo(8.0,0.0001)))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(8.0)), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").value("USD"));
 
         // Try to withdraw more than balance
@@ -108,7 +110,7 @@ public class AccountTransactionTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(accountId))
                 .andExpect(jsonPath("$.customerId").value(customerId))
-                .andExpect(jsonPath("$.balance[0].amount").value(IsCloseTo.closeTo(8.0,0.0001)))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(8.0)), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").value("USD"));
 
         // Try to withdraw a valid amount
@@ -116,7 +118,7 @@ public class AccountTransactionTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"accountId\":" + accountId + ",\"amount\":4.0,\"currency\":\"USD\",\"direction\":\"OUT\",\"description\":\"Transaction 1\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.balance").value(IsCloseTo.closeTo(4.0, 0.0001)));
+                .andExpect(jsonPath("$.balance", Matchers.comparesEqualTo(BigDecimal.valueOf(4.0)), BigDecimal.class));
 
         // Check balance
         mockMvc.perform(MockMvcRequestBuilders.get("/account/" + accountId)
@@ -124,7 +126,7 @@ public class AccountTransactionTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(accountId))
                 .andExpect(jsonPath("$.customerId").value(customerId))
-                .andExpect(jsonPath("$.balance[0].amount").value(IsCloseTo.closeTo(4.0,0.0001)))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.valueOf(4.0)), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").value("USD"));
 
     }

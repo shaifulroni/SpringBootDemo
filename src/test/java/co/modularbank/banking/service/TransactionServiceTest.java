@@ -8,6 +8,8 @@ import co.modularbank.banking.controller.model.TransactionResponse;
 import co.modularbank.banking.domain.Customer;
 import co.modularbank.banking.domain.TransactionDirection;
 import co.modularbank.banking.mapper.CustomerMapper;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +63,7 @@ public class TransactionServiceTest {
     private TransactionRequest getTransactionRequest(long tempAccountId) {
         TransactionRequest request = new TransactionRequest();
         request.setAccountId(tempAccountId);
-        request.setAmount(2.2);
+        request.setAmount(BigDecimal.valueOf(2.2));
         request.setCurrency("USD");
         request.setDirection(TransactionDirection.IN.name());
         request.setDescription("Transaction #In -> $2.2");
@@ -74,8 +77,8 @@ public class TransactionServiceTest {
         Assertions.assertDoesNotThrow(()-> {
             SaveTransactionResponse response = transactionService.makeTransaction(request);
 
-            Assertions.assertEquals(2.2, response.getBalance(), 0.0001);
-            Assertions.assertEquals(2.2, response.getAmount(), 0.0001);
+            MatcherAssert.assertThat(response.getBalance(), Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)));
+            MatcherAssert.assertThat(response.getAmount(), Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)));
             Assertions.assertEquals("USD", response.getCurrency());
             Assertions.assertTrue(response.getTransactionId() > 0);
         });
@@ -87,17 +90,17 @@ public class TransactionServiceTest {
 
         Assertions.assertDoesNotThrow(()-> {
             SaveTransactionResponse response = transactionService.makeTransaction(request);
-            Assertions.assertEquals(2.2, response.getBalance(), 0.0001);
+            MatcherAssert.assertThat(response.getBalance(), Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)));
 
             response = transactionService.makeTransaction(request);
-            Assertions.assertEquals(4.4, response.getBalance(), 0.0001);
+            MatcherAssert.assertThat(response.getBalance(), Matchers.comparesEqualTo(BigDecimal.valueOf(4.4)));
 
             response = transactionService.makeTransaction(request);
-            Assertions.assertEquals(6.6, response.getBalance(), 0.0001);
+            MatcherAssert.assertThat(response.getBalance(), Matchers.comparesEqualTo(BigDecimal.valueOf(6.6)));
 
             request.setDirection(TransactionDirection.OUT.name());
             response = transactionService.makeTransaction(request);
-            Assertions.assertEquals(4.4, response.getBalance(), 0.0001);
+            MatcherAssert.assertThat(response.getBalance(), Matchers.comparesEqualTo(BigDecimal.valueOf(4.4)));
         });
     }
 
@@ -135,7 +138,7 @@ public class TransactionServiceTest {
     @Test
     void givenLargeOUTAmountThenBalance_whenMakeTransaction_thenCheckFailed() {
         TransactionRequest request = getTransactionRequest(accountId);
-        request.setAmount(5);
+        request.setAmount(BigDecimal.valueOf(5));
         request.setDirection(TransactionDirection.OUT.name());
 
         TransactionException exception = Assertions.assertThrows(TransactionException.class, ()-> {
@@ -159,7 +162,7 @@ public class TransactionServiceTest {
             List<TransactionResponse> transactionList = transactionService.getTransactionsForAccount(accountId);
             Assertions.assertEquals(4, transactionList.size());
             Assertions.assertEquals(TransactionDirection.OUT.name(), transactionList.get(0).getDirection());
-            Assertions.assertEquals(2.2, transactionList.get(0).getAmount(), 0.001);
+            MatcherAssert.assertThat(transactionList.get(0).getAmount(), Matchers.comparesEqualTo(BigDecimal.valueOf(2.2)));
         });
     }
     @Test

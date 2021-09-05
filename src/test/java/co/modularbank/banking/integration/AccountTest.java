@@ -5,6 +5,7 @@ import co.modularbank.banking.controller.model.AccountRequest;
 import co.modularbank.banking.domain.Customer;
 import co.modularbank.banking.mapper.CustomerMapper;
 import co.modularbank.banking.service.AccountService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -63,9 +65,9 @@ public class AccountTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountId").value(accountId))
                 .andExpect(jsonPath("$.customerId").value(customerId))
-                .andExpect(jsonPath("$.balance[0].amount").value(0.0))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.ZERO), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").isString())
-                .andExpect(jsonPath("$.balance[1].amount").value(0.0))
+                .andExpect(jsonPath("$.balance[1].amount", Matchers.comparesEqualTo(BigDecimal.ZERO), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[1].currency").isString());
     }
 
@@ -86,9 +88,9 @@ public class AccountTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountId").isNumber())
                 .andExpect(jsonPath("$.customerId").value(customerId))
-                .andExpect(jsonPath("$.balance[0].amount").value(0.0))
+                .andExpect(jsonPath("$.balance[0].amount", Matchers.comparesEqualTo(BigDecimal.ZERO), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[0].currency").isString())
-                .andExpect(jsonPath("$.balance[1].amount").value(0.0))
+                .andExpect(jsonPath("$.balance[1].amount", Matchers.comparesEqualTo(BigDecimal.ZERO), BigDecimal.class))
                 .andExpect(jsonPath("$.balance[1].currency").isString());
     }
 

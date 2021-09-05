@@ -1,6 +1,8 @@
 package co.modularbank.banking.mapper;
 
 import co.modularbank.banking.domain.*;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +47,7 @@ public class TransactionMapperTest {
         Transaction transaction = new Transaction();
         transaction.setAccountId(testAccount.getId());
         transaction.setCurrency(currencyMapper.getCurrencyByShortName("USD").orElseThrow());
-        transaction.setAmount(55);
+        transaction.setAmount(BigDecimal.valueOf(55));
         transaction.setDirection(TransactionDirection.IN);
         transaction.setDescription("Test transaction 1");
 
@@ -55,7 +58,7 @@ public class TransactionMapperTest {
         Assertions.assertEquals(1, transactionList.size());
 
         Assertions.assertEquals("USD", transactionList.get(0).getCurrency().getShortName());
-        Assertions.assertEquals(55.0, transactionList.get(0).getAmount());
+        MatcherAssert.assertThat(transactionList.get(0).getAmount(), Matchers.comparesEqualTo(BigDecimal.valueOf(55.0)));
         Assertions.assertEquals(TransactionDirection.IN, transactionList.get(0).getDirection());
     }
 
@@ -64,7 +67,7 @@ public class TransactionMapperTest {
         Transaction transaction = new Transaction();
         transaction.setAccountId(9999);
         transaction.setCurrency(currencyMapper.getCurrencyByShortName("USD").orElseThrow());
-        transaction.setAmount(55);
+        transaction.setAmount(BigDecimal.valueOf(55));
         transaction.setDirection(TransactionDirection.OUT);
         transaction.setDescription("Test transaction 1");
 
@@ -76,7 +79,7 @@ public class TransactionMapperTest {
         Transaction transaction = new Transaction();
         transaction.setAccountId(testAccount.getId());
         transaction.setCurrency(currencyMapper.getCurrencyByShortName("USD").orElseThrow());
-        transaction.setAmount(-55);
+        transaction.setAmount(BigDecimal.valueOf(-55));
         transaction.setDirection(TransactionDirection.OUT);
         transaction.setDescription("Test transaction 1");
 
