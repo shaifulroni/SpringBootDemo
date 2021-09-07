@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+  app:
+    image: 'modularbank-demo-test:latest'
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: app
+    depends_on:
+      - db
+      - rabbit
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/modularbank-test??characterEncoding=UTF-8
+      - SPRING_DATASOURCE_USERNAME=modularbank
+      - SPRING_DATASOURCE_PASSWORD=modularbank
+      - SPRING_RABBITMQ_HOST=rabbit
+          
+  db:
+    image: 'postgres:13.3-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=modularbank
+      - POSTGRES_PASSWORD=modularbank
+      - POSTGRES_DB=modularbank-test
+    logging:
+      driver: "none"
+    volumes:
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./src/main/resources/data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+  rabbit:
+    image: 'rabbitmq:management-alpine'
+    container_name: rabbit
+    logging:
+      driver: "none"

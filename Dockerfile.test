@@ -1,0 +1,4 @@
+FROM gradle:7.1.1-jdk11-hotspot
+WORKDIR /
+COPY . /
+ENTRYPOINT ["./gradlew", "test"]
